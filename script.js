@@ -1,15 +1,6 @@
 let sku = 0;
 let token = 0;
-let price_tags=[];
-
-document.addEventListener('DOMContentLoaded', function() {
-  // Parse URL parameters
-  const params = new URLSearchParams(window.location.search);
-  sku = params.get('sku');
-  token = params.get('token');
-
-  price_tags = sendRequest(sku, token);
-});
+let price_tags = [];
 
 async function sendRequest(sku, token) {
   try {
@@ -21,34 +12,44 @@ async function sendRequest(sku, token) {
       },
       {
         headers: {
-          'Square-Version': '2023-07-20',
+          'Square-Version': '2024-01-18',
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       }
     );
     console.log(response.data);
-    for (var item of response.data.items) {
-      for (var variations of item.item_data.variations) {
-        if (variations.id == response.data.matched_variation_ids) {
-          var product_name = item.item_data.name;
-          var product_var = variations.item_variation_data.name;
-          var price = variations.item_variation_data.price_money.amount;
+    for (const item of response.data.items) {
+      for (const variation of item.item_data.variations) {
+        if (variation.id == response.data.matched_variation_ids) {
+          const productName = item.item_data.name;
+          const productVar = variation.item_variation_data.name;
+          let price = variation.item_variation_data.price_money.amount;
           price /= 100;
-          var sku = variations.item_variation_data.sku;
-           // Display message in output div
-          document.getElementById('name').innerText = product_name;
+          const productSku = variation.item_variation_data.sku;
+          // Display message in output div
+          document.getElementById('name').innerText = productName;
           document.getElementById('price').innerText = price;
   
-          return [product_name, product_var, price, sku];
+          return [productName, productVar, price, productSku];
         }
       }
     }
-    // If the loop doesn't find any matching variation, you may want to handle this case as well.
+    // If the loop doesn't find any matching variation, handle this case
     throw new Error("No matching variation found.");
   } catch (error) {
-    // Display the error in the responseContainer div
+    // Display the error in the responseContainer div or handle it appropriately
+    console.error(error);
     alert('No matching SKU found.');
     throw error;
   }
 }
+
+document.addEventListener('DOMContentLoaded', async function() {
+  // Parse URL parameters
+  const params = new URLSearchParams(window.location.search);
+  sku = params.get('sku');
+  token = params.get('token');
+
+  price_tags = await sendRequest(sku, token);
+});
