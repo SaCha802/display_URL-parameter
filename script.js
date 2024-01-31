@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', async function() {
   jsonContent = jsonContent.replace(/Product_name/g, price_tags[0]);
   jsonContent = jsonContent.replace(/Product_Price/g, price_tags[2]);
   preElement.textContent = jsonContent;
-  const jsonString = JSON.stringify(jsonContent);
-  const blob = new Blob([jsonString], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  window.location.href = url;
+  var blob = new Blob([jsonContent], { type: 'application/json' });
+            // Create a temporary link element to trigger the download
+            const url = URL.createObjectURL(blob);
+    window.location.href = url;
 
 
 });
