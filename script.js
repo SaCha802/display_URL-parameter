@@ -1,5 +1,6 @@
 let sku = 0;
 let token = 0;
+let price_tags=[];
 
 document.addEventListener('DOMContentLoaded', function() {
   // Parse URL parameters
@@ -7,12 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
   sku = params.get('sku');
   token = params.get('token');
 
-  // Display message in output div
-  if (message) {
-    document.getElementById('output').innerText = message;
-  } else {
-    document.getElementById('output').innerText = 'No message found in URL parameters.';
-  }
+  price_tags = sendRequest(sku, token);
 });
 
 async function sendRequest(sku, token) {
@@ -40,6 +36,10 @@ async function sendRequest(sku, token) {
           var price = variations.item_variation_data.price_money.amount;
           price /= 100;
           var sku = variations.item_variation_data.sku;
+           // Display message in output div
+          document.getElementById('name').innerText = product_name;
+          document.getElementById('price').innerText = price;
+  
           return [product_name, product_var, price, sku];
         }
       }
