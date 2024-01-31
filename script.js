@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   jsonContent = jsonContent.replace(/Product_name/g, price_tags[0]);
   jsonContent = jsonContent.replace(/Product_Price/g, price_tags[2]);
   preElement.textContent = jsonContent;
-  const jsonString = JSON.stringify(Content);
+  const jsonString = JSON.stringify(jsonContent);
   const blob = new Blob([jsonString], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   window.location.href = url;
