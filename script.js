@@ -19,19 +19,16 @@ async function sendRequest(sku, token) {
       }
     );
     console.log(response.data);
-    for (const item of response.data.items) {
-      for (const variation of item.item_data.variations) {
-        if (variation.id == response.data.matched_variation_ids) {
-          const productName = item.item_data.name;
-          const productVar = variation.item_variation_data.name;
-          let price = variation.item_variation_data.price_money.amount;
+
+    for (var item of response.data.items) {
+      for (var variations of item.item_data.variations) {
+        if (variations.id == response.data.matched_variation_ids) {
+          var product_name = item.item_data.name;
+          var product_var = variations.item_variation_data.name;
+          var price = variations.item_variation_data.price_money.amount;
           price /= 100;
-          const productSku = variation.item_variation_data.sku;
-          // Display message in output div
-          document.getElementById('name').innerText = productName;
-          document.getElementById('price').innerText = price;
-  
-          return [productName, productVar, price, productSku];
+          var sku = variations.item_variation_data.sku;
+          return [product_name, product_var, price, sku];
         }
       }
     }
@@ -52,4 +49,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   token = params.get('token');
 
   price_tags = await sendRequest(sku, token);
+  const preElement = document.getElementById('json-content');
+  let jsonContent = preElement.textContent;
+  jsonContent = jsonContent.replace(/Product_name/g, price_tags[0]);
+  jsonContent = jsonContent.replace(/Product_Price/g, price_tags[2]);
+  preElement.textContent = jsonContent;
 });
